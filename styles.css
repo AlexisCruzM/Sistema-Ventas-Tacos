@@ -1,0 +1,300 @@
+:root {
+    /* Colores principales */
+    --primary-color: #6247E0;
+    --secondary-color: #F5F5F7;
+    --text-color: #333333;
+    --light-text: #666666;
+    
+    /* Colores para tarjetas KPI */
+    --sales-bg: #EEF3FF;
+    --sales-text: #3366FF;
+    --expenses-bg: #FFEEEE;
+    --expenses-text: #D93636;
+    --profit-bg: #EEFFEE;
+    --profit-text: #36B336;
+    --margin-bg: #F8EEFF;
+    --margin-text: #9747E0;
+    --avg-cost-bg: #FFFBEE;
+    --avg-cost-text: #E0A147;
+    
+    /* Colores para alertas */
+    --alert-bg: #FFFBEE;
+    --alert-border: #E0C047;
+    --alert-text: #8A6D00;
+    
+    /* Sombras y bordes */
+    --card-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    --border-radius: 12px;
+    --button-radius: 24px;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    background-color: var(--secondary-color);
+    color: var(--text-color);
+    line-height: 1.6;
+}
+
+/* Header */
+.header {
+    background-color: var(--primary-color);
+    color: white;
+    padding: 20px;
+    text-align: center;
+    border-radius: 0 0 var(--border-radius) var(--border-radius);
+    box-shadow: var(--card-shadow);
+}
+
+.header-content {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 5px;
+}
+
+.taco-icon, .arepa-icon {
+    font-size: 24px;
+}
+
+.subtitle {
+    font-size: 16px;
+    opacity: 0.9;
+}
+
+/* Navegación */
+.navigation {
+    margin: 20px auto;
+    max-width: 1200px;
+}
+
+.nav-container {
+    background-color: white;
+    border-radius: var(--border-radius);
+    padding: 15px;
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    gap: 10px;
+    box-shadow: var(--card-shadow);
+}
+
+.nav-button {
+    background-color: #E8E8E8;
+    border: none;
+    border-radius: var(--button-radius);
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.nav-button.active {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.nav-button:hover:not(.active) {
+    background-color: #D8D8D8;
+}
+
+/* Contenido principal */
+.main-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.daily-summary {
+    background-color: white;
+    border-radius: var(--border-radius);
+    padding: 25px;
+    box-shadow: var(--card-shadow);
+}
+
+.daily-summary h2 {
+    font-size: 24px;
+    margin-bottom: 20px;
+    color: var(--text-color);
+}
+
+/* Selector de fecha */
+.date-selector {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.date-input-container {
+    position: relative;
+}
+
+input[type="date"] {
+    padding: 8px 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 16px;
+}
+
+/* Dinero inicial */
+.initial-cash {
+    margin-bottom: 25px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.cash-value {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+/* Tarjetas KPI */
+.kpi-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.kpi-card {
+    border-radius: var(--border-radius);
+    padding: 20px;
+    box-shadow: var(--card-shadow);
+}
+
+.kpi-card h3 {
+    font-size: 18px;
+    margin-bottom: 10px;
+}
+
+.kpi-value {
+    font-size: 28px;
+    font-weight: bold;
+}
+
+/* Estilos específicos para cada tarjeta KPI */
+.kpi-card.sales {
+    background-color: var(--sales-bg);
+}
+
+.kpi-card.sales .kpi-value {
+    color: var(--sales-text);
+}
+
+.kpi-card.expenses {
+    background-color: var(--expenses-bg);
+}
+
+.kpi-card.expenses .kpi-value {
+    color: var(--expenses-text);
+}
+
+.kpi-card.profit {
+    background-color: var(--profit-bg);
+}
+
+.kpi-card.profit .kpi-value {
+    color: var(--profit-text);
+}
+
+.profit-label {
+    color: var(--profit-text);
+    font-weight: bold;
+    margin-top: 5px;
+}
+
+.kpi-card.margin {
+    background-color: var(--margin-bg);
+}
+
+.kpi-card.margin .kpi-value {
+    color: var(--margin-text);
+}
+
+.kpi-card.avg-cost {
+    background-color: var(--avg-cost-bg);
+}
+
+.kpi-card.avg-cost .kpi-value {
+    color: var(--avg-cost-text);
+}
+
+/* Detalles diarios */
+.daily-details {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.daily-sales, .daily-expenses {
+    margin-top: 20px;
+}
+
+.daily-sales h3, .daily-expenses h3 {
+    font-size: 18px;
+    margin-bottom: 10px;
+    color: var(--text-color);
+}
+
+.no-data {
+    color: var(--light-text);
+    font-style: italic;
+}
+
+/* Alerta de inventario */
+.alert {
+    background-color: var(--alert-bg);
+    border-left: 4px solid var(--alert-border);
+    padding: 15px 20px;
+    border-radius: 4px;
+    margin-top: 30px;
+}
+
+.alert h3 {
+    color: var(--alert-text);
+    font-size: 16px;
+    margin-bottom: 5px;
+}
+
+.alert p {
+    color: var(--alert-text);
+}
+
+/* Footer */
+.footer {
+    text-align: center;
+    padding: 20px;
+    margin-top: 40px;
+    color: var(--light-text);
+    font-size: 14px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .kpi-cards, .daily-details {
+        grid-template-columns: 1fr;
+    }
+    
+    .nav-container {
+        flex-direction: column;
+    }
+    
+    .nav-button {
+        width: 100%;
+        text-align: center;
+    }
+}
