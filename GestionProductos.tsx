@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useStore } from './store';
-import { Producto, Ingrediente, IngredienteEnReceta } from './types';
+import { Producto, IngredienteEnReceta } from './types';
 import { formatCurrency } from './utils';
 
 const GestionProductos = () => {

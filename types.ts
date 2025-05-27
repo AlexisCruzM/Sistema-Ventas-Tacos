@@ -40,6 +40,7 @@ export interface Venta {
   total: number;
   costoTotal: number;
   ganancia: number;
+  metodoPago: 'Efectivo' | 'Tarjeta' | 'Transferencia';
 }
 
 // Producto vendido
@@ -57,6 +58,7 @@ export interface ProductoVendido {
 export interface Gasto {
   id: string;
   fecha: string;
+  hora: string;
   descripcion: string;
   cantidad: number;
   unidadMedida?: string;

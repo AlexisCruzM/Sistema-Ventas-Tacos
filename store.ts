@@ -3,7 +3,7 @@ import { create } from 'zustand';
 import { AppState, AppStateData, Producto, Ingrediente, Venta, Gasto } from './types';
 // import { v4 as uuidv4 } from 'uuid'; // No longer needed, Firebase generates keys
 import { database } from './firebase-config';
-import { ref, onValue, set as firebaseSet, push as firebasePush, remove as firebaseRemove, DatabaseReference } from "firebase/database";
+import { ref, onValue, set as firebaseSet, push as firebasePush, remove as firebaseRemove } from "firebase/database";
 
 // Obtener la fecha actual en formato YYYY-MM-DD
 const getCurrentDate = () => {
@@ -48,6 +48,7 @@ const snapshotToArray = <T>(snapshot: any): T[] => {
 // Extend the AppState type to include the initFirebaseListeners method
 interface AppStateWithFirebase extends AppState {
   initFirebaseListeners: () => void;
+  actualizarGasto: (id: string, gasto: Partial<Omit<Gasto, 'id'>>) => void;
 }
 
 // Crear el store
@@ -252,28 +253,33 @@ export const useStore = create<AppStateWithFirebase>((set, get) => ({
    },
 
    // Métodos para gastos (escriben en Firebase)
-   registrarGasto: (gasto: Omit<Gasto, 'id' | 'fecha'>) => {
-     const fecha = get().fechaSeleccionada;
-
+   registrarGasto: (gasto: Omit<Gasto, 'id' | 'fecha' | 'hora'>) => {
+     const fecha = getCurrentDate(); // Usar la fecha actual del sistema
+     const hora = new Date().toLocaleTimeString();
+     
      const newGasto = {
        ...gasto,
        fecha,
+       hora
      };
-
-      // Push to Firebase. onValue listener will update local state with generated ID.
+     
+     // Push to Firebase. onValue listener will update local state with generated ID.
      firebasePush(ref(database, 'gastos'), newGasto).catch(console.error);
+   },
+
+   eliminarGasto: (id: string) => {
+     // Remove from Firebase. onValue listener will update local state.
+     firebaseRemove(ref(database, 'gastos/' + id)).catch(console.error);
    },
 
    actualizarGasto: (id: string, gasto: Partial<Omit<Gasto, 'id'>>) => {
      // Update specific expense in Firebase. onValue listener will update local state.
-     firebaseSet(ref(database, 'gastos/' + id), gasto).catch(console.error);
+     // Ensure that the original date is preserved when updating
+     const updatedGasto = { ...gasto };
+     // If you need to prevent changing the date on update, you might fetch the original gasto first
+     // For now, assuming partial update is sufficient and date won't be sent in partial update
+     firebaseSet(ref(database, 'gastos/' + id), updatedGasto).catch(console.error);
    },
-
-    eliminarGasto: (id: string) => {
-       // Remove from Firebase. onValue listener will update local state.
-      firebaseRemove(ref(database, 'gastos/' + id)).catch(console.error);
-    }
-
 
 }));
 

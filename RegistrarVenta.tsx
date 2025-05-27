@@ -92,11 +92,15 @@ const RegistrarVenta = () => {
       return;
     }
 
-    const nuevaVenta: Omit<Venta, 'id' | 'fecha' | 'hora'> = {
+    const nuevaVenta: Venta = {
+      id: '', // Firebase generará el ID
+      fecha: new Date().toLocaleDateString(),
+      hora: new Date().toLocaleTimeString(),
       productos: carrito,
       total,
       costoTotal,
       ganancia: total - costoTotal,
+      metodoPago: 'Efectivo' // Puedes cambiar esto según la lógica actual
     };
 
     if (editingSale) {
@@ -163,8 +167,14 @@ const RegistrarVenta = () => {
           <h3>Productos Disponibles</h3>
           
           <div className="filter-controls">
-            <input type="text" placeholder="Buscar producto..." />
-            <select>
+            <input 
+              type="text" 
+              placeholder="Buscar producto..." 
+              style={{ padding: '8px', borderRadius: '5px', border: '1px solid #ccc', backgroundColor: '#f9f9f9', marginRight: '10px' }}
+            />
+            <select
+              style={{ padding: '8px', borderRadius: '5px', border: '1px solid #ccc', backgroundColor: '#f9f9f9' }}
+            >
               <option value="">Todas las categorías</option>
               <option value="taco">Taco</option>
               <option value="arepa">Arepa</option>

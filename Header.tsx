@@ -1,6 +1,3 @@
-import React from 'react';
-import { useStore } from './store';
-
 const Header = () => {
   return (
     <header className="header">

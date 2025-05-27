@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useStore } from './store';
-import { Gasto, Ingrediente } from './types';
-import { formatCurrency } from './utils';
+import { Gasto } from './types';
+import { formatCurrency } from './utils'; // Importar la función de formato de moneda
 
 const RegistrarGasto = () => {
-  const { ingredientes, gastos, registrarGasto, actualizarGasto, eliminarGasto } = useStore();
+  const { ingredientes, registrarGasto, actualizarGasto, eliminarGasto, gastos, fechaSeleccionada } = useStore();
   
   const [descripcion, setDescripcion] = useState('');
   const [cantidad, setCantidad] = useState('');
@@ -83,15 +83,23 @@ const RegistrarGasto = () => {
       cantidadNum = parseFloat(cantidad);
     }
 
-    const gastoData: Omit<Gasto, 'id' | 'fecha'> = {
+    // Build the base expense data object
+    let gastoData: Omit<Gasto, 'id' | 'fecha' | 'hora'> = {
       descripcion,
-      cantidad: cantidadNum,
-      unidadMedida: tipo === 'ingrediente' ? unidadMedida : undefined,
+      cantidad: cantidadNum, // Always include quantity (0 for operativo)
       costoTotal: costoTotalNum,
       tipo,
-      ingredienteId: tipo === 'ingrediente' ? ingredienteId : undefined
     };
-    
+
+    // Add ingredient specific properties only if type is ingrediente
+    if (tipo === 'ingrediente') {
+        gastoData = {
+            ...gastoData,
+            unidadMedida: unidadMedida,
+            ingredienteId: ingredienteId,
+        };
+    }
+
     if (editingExpense) {
         // Lógica para actualizar gasto
         const updatedGasto = {
@@ -120,30 +128,24 @@ const RegistrarGasto = () => {
     setUnidadMedida('');
   };
 
-    // Iniciar modo edición de gasto
-   const startEditingExpense = (gasto: Gasto) => {
-       setEditingExpense(gasto);
-   };
+  // Filtrar gastos por la fecha seleccionada
+  const gastosDelDia = gastos.filter(gasto => gasto.fecha === fechaSeleccionada);
 
-   // Cancelar edición
-   const cancelEditingExpense = () => {
-       setEditingExpense(null);
-   };
+  // Función para manejar la eliminación de un gasto
+  const handleDelete = (id: string) => {
+    if (window.confirm('¿Estás seguro de que quieres eliminar este gasto?')) {
+      eliminarGasto(id);
+    }
+  };
 
-   // Eliminar gasto
-   const handleDeleteExpense = (id: string) => {
-       if (confirm('¿Estás seguro de que quieres eliminar este gasto?')) {
-           eliminarGasto(id);
-            if (editingExpense?.id === id) {
-               setEditingExpense(null); // Si se elimina el que se estaba editando
-           }
-           alert('Gasto eliminado con éxito!');
-       }
-   };
-  
+  // Función para manejar la edición de un gasto
+  const handleEdit = (gasto: Gasto) => {
+    setEditingExpense(gasto);
+  };
+
   return (
     <div className="register-expense">
-      <h2>Registrar Gasto</h2>
+      <h2>{editingExpense ? 'Editar Gasto' : 'Registrar Gasto'}</h2>
       
       <form className="expense-form" onSubmit={handleSubmit}>
         <div className="form-group">
@@ -222,9 +224,47 @@ const RegistrarGasto = () => {
         </div>
         
         <button type="submit" className="submit-button">
-          Registrar Gasto
+          {editingExpense ? 'Actualizar Gasto' : 'Registrar Gasto'}
         </button>
       </form>
+
+      {/* Sección para mostrar gastos registrados */}
+      <div className="expense-list">
+        <h3>Gastos Registrados ({fechaSeleccionada})</h3>
+        {gastosDelDia.length > 0 ? (
+          <table className="data-table">
+            <thead>
+              <tr>
+                <th>Hora</th>
+                <th>Descripción</th>
+                <th>Tipo</th>
+                {/* <th>Cantidad</th> */}
+                {/* <th>Unidad</th> */}
+                <th>Costo Total</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              {gastosDelDia.map(gasto => (
+                <tr key={gasto.id}>
+                  <td>{gasto.hora}</td>
+                  <td>{gasto.descripcion}</td>
+                  <td>{gasto.tipo === 'ingrediente' ? 'Ingrediente' : 'Operativo'}</td>
+                  {/* <td>{gasto.cantidad}</td> */}
+                  {/* <td>{gasto.unidadMedida}</td> */}
+                  <td>{formatCurrency(gasto.costoTotal)}</td>
+                  <td>
+                    <button onClick={() => handleEdit(gasto)} style={{ marginRight: '10px', padding: '8px 20px', borderRadius: '25px', border: '1px solid #ccc', backgroundColor: '#f5f5dc', cursor: 'pointer', color: '#333', fontSize: '14px', boxShadow: '1px 1px 2px rgba(0,0,0,0.1)' }}>Editar</button>
+                    <button onClick={() => handleDelete(gasto.id)} style={{ padding: '8px 20px', borderRadius: '25px', border: '1px solid #ccc', backgroundColor: '#f5f5dc', cursor: 'pointer', color: '#333', fontSize: '14px', boxShadow: '1px 1px 2px rgba(0,0,0,0.1)' }}>Eliminar</button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        ) : (
+          <p className="no-data">No hay gastos registrados para esta fecha.</p>
+        )}
+      </div>
     </div>
   );
 };
