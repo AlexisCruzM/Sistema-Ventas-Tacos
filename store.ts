@@ -254,7 +254,7 @@ export const useStore = create<AppStateWithFirebase>((set, get) => ({
 
    // Métodos para gastos (escriben en Firebase)
    registrarGasto: (gasto: Omit<Gasto, 'id' | 'fecha' | 'hora'>) => {
-     const fecha = getCurrentDate(); // Usar la fecha actual del sistema
+     const fecha = get().fechaSeleccionada;
      const hora = new Date().toLocaleTimeString();
      
      const newGasto = {
